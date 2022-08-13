@@ -50,6 +50,20 @@ pub fn get_middle(s: &str) -> &str {
     &s[start..=end]
 }
 
+/// https://www.codewars.com/kata/554b4ac871d6813a03000035
+pub fn high_and_low(numbers: &str) -> String {
+    let parsed_numbers: Vec<_> = numbers
+        .split_whitespace()
+        .into_iter()
+        .map(|s| s.parse::<i32>().unwrap())
+        .collect();
+    format!(
+        "{} {}",
+        parsed_numbers.iter().max().unwrap(),
+        parsed_numbers.iter().min().unwrap()
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -131,5 +145,14 @@ mod tests {
         assert_eq!(parse_molecule("Mg(OH}2").is_ok(), false);
         assert_eq!(parse_molecule("(C5H5)Fe(CO)2CH3").is_ok(), true);
         assert_eq!(parse_molecule("{[Co(NH3)4(OH)2]3Co}(SO4)3").is_ok(), true);
+    }
+
+    #[test]
+    fn test_high_and_low() {
+        assert_eq!("5 1", high_and_low("1 2 3 4 5"));
+        assert_eq!("5 -3", high_and_low("1 2 -3 4 5"));
+        assert_eq!("9 -5", high_and_low("1 9 3 4 -5"));
+        assert_eq!("42 -9", high_and_low("8 3 -5 42 -1 0 0 -9 4 7 4 -4"));
+        assert_eq!("3 1", high_and_low("1 2 3"));
     }
 }
