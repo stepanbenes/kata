@@ -1,6 +1,8 @@
 mod differentiation;
 mod molecule_parser;
-mod spiralize;
+//mod spiralize;
+//mod last_digit_of_large_numbers;
+//mod dijkstra;
 
 /// https://www.codewars.com/kata/5208f99aee097e6552000148
 pub fn solution(s: &str) -> String {
