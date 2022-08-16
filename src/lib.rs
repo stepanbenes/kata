@@ -64,6 +64,14 @@ pub fn high_and_low(numbers: &str) -> String {
     )
 }
 
+/// Sum of Minimums!
+/// https://www.codewars.com/kata/5d5ee4c35162d9001af7d699
+pub fn sum_of_minimums(numbers: [[u8; 4]; 4]) -> u8 {
+    numbers.iter().map(|x| x.iter().min().unwrap()).sum()
+    //numbers.iter().filter_map(|x| x.iter().min()).sum()
+    //numbers.iter().flat_map(|x| x.iter().min()).sum()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -154,5 +162,21 @@ mod tests {
         assert_eq!("9 -5", high_and_low("1 9 3 4 -5"));
         assert_eq!("42 -9", high_and_low("8 3 -5 42 -1 0 0 -9 4 7 4 -4"));
         assert_eq!("3 1", high_and_low("1 2 3"));
+    }
+
+    #[test]
+    fn test_sum_of_minimums() {
+        assert_eq!(
+            sum_of_minimums([[7, 9, 8, 6], [6, 5, 4, 3], [5, 7, 4, 5], [7, 9, 4, 3]]),
+            16
+        );
+        assert_eq!(
+            sum_of_minimums([[7, 9, 8, 6], [6, 5, 4, 3], [5, 7, 4, 5], [7, 9, 4, 4]]),
+            17
+        );
+        assert_eq!(
+            sum_of_minimums([[7, 9, 8, 84], [6, 5, 4, 65], [5, 7, 4, 23], [7, 9, 4, 25]]),
+            19
+        );
     }
 }
