@@ -72,6 +72,26 @@ pub fn sum_of_minimums(numbers: [[u8; 4]; 4]) -> u8 {
     //numbers.iter().flat_map(|x| x.iter().min()).sum()
 }
 
+pub fn print_diamond(n: i32) -> Option<String> {
+    if n < 0 || n % 2 == 0 {
+        return None;
+    }
+    let mut diamond = String::new();
+    let origin = n / 2;
+    for row in -origin..=origin {
+        for column in -origin..=origin {
+            let manhattan_distance_from_origin = row.abs() + column.abs();
+            if manhattan_distance_from_origin <= origin {
+                diamond.push('*');
+            } else if column < 0 {
+                diamond.push(' ');
+            }
+        }
+        diamond.push('\n');
+    }
+    Some(diamond)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -178,5 +198,15 @@ mod tests {
             sum_of_minimums([[7, 9, 8, 84], [6, 5, 4, 65], [5, 7, 4, 23], [7, 9, 4, 25]]),
             19
         );
+    }
+
+    #[test]
+    fn test_diamond() {
+        assert_eq!(print_diamond(3), Some(" *\n***\n *\n".to_string()) );
+        assert_eq!(print_diamond(5), Some("  *\n ***\n*****\n ***\n  *\n".to_string()) );
+        assert_eq!(print_diamond(-3),None);
+        assert_eq!(print_diamond(2),None);
+        assert_eq!(print_diamond(0),None);
+        assert_eq!(print_diamond(1), Some("*\n".to_string()) );
     }
 }
