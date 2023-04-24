@@ -98,7 +98,14 @@ pub fn print_diamond(n: i32) -> Option<String> {
 /// Fluid Volume of a Heightmap
 /// https://www.codewars.com/kata/5b98dfa088d44a8b000001c1/train/rust
 pub fn volume(heightmap: &Vec<Vec<i32>>) -> i32 {
-    fluid_volume::calculate_fluid_volume(&fluid_volume::HeightMap::new(heightmap))
+    fluid_volume::calculate_fluid_volume(fluid_volume::HeightMap::new(heightmap))
+}
+
+/// Evaluate mathematical expression
+/// https://www.codewars.com/kata/52a78825cdfc2cfc87000005/train/rust
+pub fn calc(_expr: &str) -> f64 {
+    todo!()
+    // pouzit C# lexer ze semestralky na PJP
 }
 
 #[cfg(test)]

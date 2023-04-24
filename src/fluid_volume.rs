@@ -24,18 +24,26 @@
 // 75 large random tests, where 80 <= width|height <= 100 and `-50 <= depth <= 150
 use std::fmt::{self, Display};
 
-pub struct HeightMap<'a> { heightmap: &'a Vec<Vec<i32>> }
+struct Square { height: i32, volume: i32, visited: bool }
+struct Index(usize, usize);
 
-impl<'a> HeightMap<'a> {
+pub struct HeightMap { heightmap: Vec<Vec<Square>> }
+
+impl HeightMap {
     pub fn new(heightmap: &Vec<Vec<i32>>) -> HeightMap {
-        HeightMap { heightmap }
+        HeightMap { heightmap: heightmap.iter().map(|row| row.iter().map(|item| Square { height: *item, volume: 0, visited: false }).collect()).collect() }
+    }
+
+    pub fn at(&self, index: Index) -> Option<&Square> {
+        let Index(x, y) = index;
+        self.heightmap.get(x)?.get(y)
     }
 
     pub fn print(&self) -> String {
         let mut result = String::new();
         for row in self.heightmap.iter() {
-            for number in row {
-                result.push_str(&format!("{number} "));
+            for square in row {
+                result.push_str(&format!("{} ", square.height));
             }
             result.push('\n');
         }
@@ -43,13 +51,25 @@ impl<'a> HeightMap<'a> {
     }
 }
 
-impl Display for HeightMap<'_> {
+impl Display for HeightMap {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.print())
     }
 }
 
-pub fn calculate_fluid_volume(heightmap: &HeightMap) -> i32 {
+pub fn calculate_fluid_volume(heightmap: HeightMap) -> i32 {
     //print!("{}", heightmap);
     0
 }
+
+// fn find_lowest_neighbor(index: Index, heightmap: &HeightMap) -> Index {
+//     let Index(center_x, center_y) = index;
+//     let center_square = heightmap.at(index).unwrap();
+//     let left_neighbor = heightmap.at(Index(center_x - 1, center_y));
+
+
+
+//     let right_neighbor = heightmap.at(Index(center_x + 1, center_y));
+//     let top_neighbor = heightmap.at(Index(center_x, center_y - 1));
+//     let bottom_neighbor = heightmap.at(Index(center_x, center_y + 1));
+// }
