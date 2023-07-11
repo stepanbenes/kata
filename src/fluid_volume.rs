@@ -25,16 +25,35 @@
 use std::fmt::{self, Display};
 
 #[derive(Debug)]
-struct Square { height: i32, volume: i32, visited: bool }
+struct Square {
+    height: i32,
+    volume: i32,
+    visited: bool,
+}
 
 #[derive(Debug, Copy, Clone)]
 struct Index(isize, isize);
 
-pub struct HeightMap { heightmap: Vec<Vec<Square>> }
+pub struct HeightMap {
+    heightmap: Vec<Vec<Square>>,
+}
 
 impl HeightMap {
     pub fn new(heightmap: &Vec<Vec<i32>>) -> HeightMap {
-        HeightMap { heightmap: heightmap.iter().map(|row| row.iter().map(|item| Square { height: *item, volume: 0, visited: false }).collect()).collect() }
+        HeightMap {
+            heightmap: heightmap
+                .iter()
+                .map(|row| {
+                    row.iter()
+                        .map(|item| Square {
+                            height: *item,
+                            volume: 0,
+                            visited: false,
+                        })
+                        .collect()
+                })
+                .collect(),
+        }
     }
 
     fn at(&self, index: Index) -> Option<&Square> {
@@ -79,6 +98,17 @@ impl HeightMap {
         result
     }
 
+    pub fn print_full_height(&self) -> String {
+        let mut result = String::new();
+        for row in self.heightmap.iter() {
+            for square in row {
+                result.push_str(&format!("{} ", square.height + square.volume));
+            }
+            result.push('\n');
+        }
+        result
+    }
+
     pub fn sum_volume(&self) -> i32 {
         let mut sum = 0;
         for row in self.heightmap.iter() {
@@ -110,15 +140,49 @@ pub fn calculate_fluid_volume(mut heightmap: HeightMap) -> i32 {
     for row in 0..rows {
         for column in 0..columns {
             let index = Index(row as isize, column as isize);
-            if let Some(lowest_edge_square_index) = find_lowest_edge_square(index, &mut heightmap) {
+            let lowest_edge_square = find_lowest_edge_square(index, &mut heightmap);
+            //println!("{:?}: {:?}", index, lowest_edge_square);
+            if let Some(lowest_edge_square_index) = lowest_edge_square {
                 let lowest_edge_square = heightmap.at(lowest_edge_square_index).unwrap();
                 flood_fill(index, lowest_edge_square.height, &mut heightmap);
             }
             heightmap.reset(); // TODO: avoid this
         }
     }
-    //println!("{}", heightmap.print_volume());
-    heightmap.sum_volume()
+
+    println!("{}", heightmap.print_volume());
+    println!("{}", heightmap.print_full_height());
+
+    let first_sum = heightmap.sum_volume();
+
+    for row in 0..rows {
+        for column in 0..columns {
+            let index = Index(row as isize, column as isize);
+            let square = heightmap.at_mut(index).unwrap();
+            square.height += square.volume;
+            square.volume = 0;
+        }
+    }
+
+    for row in 0..rows {
+        for column in 0..columns {
+            let index = Index(row as isize, column as isize);
+            let lowest_edge_square = find_lowest_edge_square(index, &mut heightmap);
+            //println!("{:?}: {:?}", index, lowest_edge_square);
+            if let Some(lowest_edge_square_index) = lowest_edge_square {
+                let lowest_edge_square = heightmap.at(lowest_edge_square_index).unwrap();
+                flood_fill(index, lowest_edge_square.height, &mut heightmap);
+            }
+            heightmap.reset(); // TODO: avoid this
+        }
+    }
+
+    println!("{}", heightmap.print_volume());
+    println!("{}", heightmap.print_full_height());
+
+    let second_sum = heightmap.sum_volume();
+
+    first_sum + second_sum
 }
 
 fn find_lowest_edge_square(index: Index, heightmap: &mut HeightMap) -> Option<Index> {
@@ -127,7 +191,12 @@ fn find_lowest_edge_square(index: Index, heightmap: &mut HeightMap) -> Option<In
     let center_square_height = center_square.height;
     center_square.visited = true;
 
-    let neighbor_indexes = [Index(center_x - 1, center_y), Index(center_x + 1, center_y), Index(center_x, center_y - 1), Index(center_x, center_y + 1)];
+    let neighbor_indexes = [
+        Index(center_x - 1, center_y),
+        Index(center_x + 1, center_y),
+        Index(center_x, center_y - 1),
+        Index(center_x, center_y + 1),
+    ];
     let mut neighbors = Vec::<_>::new();
     for index in neighbor_indexes {
         let neighbor = heightmap.at_mut(index)?;
@@ -137,23 +206,29 @@ fn find_lowest_edge_square(index: Index, heightmap: &mut HeightMap) -> Option<In
         }
     }
 
-    let &(min_neighbor_height, min_neighbor_index) = neighbors.iter().min_by_key(|&(square_height, _)| square_height)?;
-    if let Some(&(min_neighbor_edge_height, min_neighbor_edge_index)) = neighbors.iter().filter(|&(square_height, _)| *square_height > center_square_height).min_by_key(|&(square_height, _)| square_height) { // found edge
-        if min_neighbor_edge_height == min_neighbor_height { // edge is lowest
+    let &(min_neighbor_height, min_neighbor_index) = neighbors
+        .iter()
+        .min_by_key(|&(square_height, _)| square_height)?;
+    if let Some(&(min_neighbor_edge_height, min_neighbor_edge_index)) = neighbors
+        .iter()
+        .filter(|&(square_height, _)| *square_height > center_square_height)
+        .min_by_key(|&(square_height, _)| square_height)
+    {
+        // found edge
+        if min_neighbor_edge_height == min_neighbor_height {
+            // edge is lowest
             Some(min_neighbor_edge_index)
-        }
-        else {
-            let min_global_edge_square_index = find_lowest_edge_square(min_neighbor_index, heightmap)?;
+        } else {
+            let min_global_edge_square_index =
+                find_lowest_edge_square(min_neighbor_index, heightmap)?;
             let min_global_edge_square_height = heightmap.at(min_global_edge_square_index)?.height;
             if min_global_edge_square_height < min_neighbor_edge_height {
                 Some(min_global_edge_square_index)
-            }
-            else {
+            } else {
                 Some(min_neighbor_edge_index)
             }
         }
-    }
-    else {
+    } else {
         find_lowest_edge_square(min_neighbor_index, heightmap)
     }
 }
@@ -161,13 +236,17 @@ fn find_lowest_edge_square(index: Index, heightmap: &mut HeightMap) -> Option<In
 fn flood_fill(index: Index, fill_height: i32, heightmap: &mut HeightMap) {
     let Index(center_x, center_y) = index;
     let center_square = heightmap.at_mut(index).unwrap();
-    if try_fill_square(center_square, fill_height) {
-        let neighbor_indexes = [Index(center_x - 1, center_y), Index(center_x + 1, center_y), Index(center_x, center_y - 1), Index(center_x, center_y + 1)];
-        for neighbor_index in neighbor_indexes {
-            if let Some(neighbor) = heightmap.at_mut(neighbor_index) {
-                if try_fill_square(neighbor, fill_height) {
-                    flood_fill(neighbor_index, fill_height, heightmap);
-                }
+    let _ = try_fill_square(center_square, fill_height);
+    let neighbor_indexes = [
+        Index(center_x - 1, center_y),
+        Index(center_x + 1, center_y),
+        Index(center_x, center_y - 1),
+        Index(center_x, center_y + 1),
+    ];
+    for neighbor_index in neighbor_indexes {
+        if let Some(neighbor) = heightmap.at_mut(neighbor_index) {
+            if try_fill_square(neighbor, fill_height) {
+                flood_fill(neighbor_index, fill_height, heightmap);
             }
         }
     }
@@ -176,8 +255,7 @@ fn flood_fill(index: Index, fill_height: i32, heightmap: &mut HeightMap) {
         if square.height + square.volume < fill_height {
             square.volume = fill_height - square.height;
             true
-        }
-        else {
+        } else {
             false
         }
     }

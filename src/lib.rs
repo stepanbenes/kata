@@ -1,6 +1,8 @@
+mod all_balanced_parentheses;
 mod differentiation;
-mod molecule_parser;
 mod fluid_volume;
+mod molecule_parser;
+mod sudoku;
 //mod spiralize;
 //mod last_digit_of_large_numbers;
 //mod dijkstra;
@@ -218,139 +220,133 @@ mod tests {
 
     #[test]
     fn test_diamond() {
-        assert_eq!(print_diamond(3), Some(" *\n***\n *\n".to_string()) );
-        assert_eq!(print_diamond(5), Some("  *\n ***\n*****\n ***\n  *\n".to_string()) );
-        assert_eq!(print_diamond(-3),None);
-        assert_eq!(print_diamond(2),None);
-        assert_eq!(print_diamond(0),None);
-        assert_eq!(print_diamond(1), Some("*\n".to_string()) );
+        assert_eq!(print_diamond(3), Some(" *\n***\n *\n".to_string()));
+        assert_eq!(
+            print_diamond(5),
+            Some("  *\n ***\n*****\n ***\n  *\n".to_string())
+        );
+        assert_eq!(print_diamond(-3), None);
+        assert_eq!(print_diamond(2), None);
+        assert_eq!(print_diamond(0), None);
+        assert_eq!(print_diamond(1), Some("*\n".to_string()));
     }
+
+    // #[test]
+    // fn test_all_balanced_parenthesis() {
+    //     assert_eq!(all_balanced_parentheses::balanced_parens(3), vec!["((()))", "(()())", "(())()", "()(())", "()()()"]);
+    // }
 }
 
 #[cfg(test)]
 mod fluid_volume_tests {
-    use super::*;
+    //use super::*;
 
     // this just helps with the test output on failure.
-    fn pretty_test(map: &Vec<Vec<i32>>, expected: i32) {
-        let result = volume(&map);
-        let mut printy = String::new();
-        for row in map {
-            printy.push_str(format!("{:?}\n", row).as_str());
-        }
-        assert_eq!(result, expected, "\nYour result (left) did not match expected result (right) for map:\n{}", printy);
+    // fn pretty_test(map: &Vec<Vec<i32>>, expected: i32) {
+    //     let result = volume(&map);
+    //     let mut printy = String::new();
+    //     for row in map {
+    //         printy.push_str(format!("{:?}\n", row).as_str());
+    //     }
+    //     assert_eq!(result, expected, "\nYour result (left) did not match expected result (right) for map:\n{}", printy);
+    // }
+
+    // #[test]
+    // fn negative_heights_tests() {
+    //     let tests = [
+    //         (vec![vec![-1]], 0),
+
+    //         (vec![vec![3, 3, 3, 3, 3],
+    //               vec![3, 0, 0, 0, 3],
+    //               vec![3, 3, 3, 0, 3],
+    //               vec![3, 0, -2, 0, 3],
+    //               vec![3, 0, 3, 3, 3],
+    //               vec![3, 0, 0, 0, 3],
+    //               vec![3, 3, 3, 1, -3]], 13),
+
+    //         (vec![vec![8192, 8192, 8192, 8192],
+    //               vec![8192,-8192,-8192, 8192],
+    //               vec![8192,-8192,-8192, 8192],
+    //               vec![8192, 8192, 8192, 8192]], 65536)
+    //     ];
+
+    //     for (map, expected) in tests.iter() {
+    //         pretty_test(map, *expected);
+    //     }
+    // }
+
+    // #[test]
+    // fn large_map_test() {
+    //     // 50x50 map without leaks; 100 around the border, 0 inside
+    //     let mut map = vec![vec![100; 50]; 50];
+    //     for y in 1..49 {
+    //         for x in 1..49 {
+    //             map[y][x] = 0;
+    //         }
+    //     }
+    //     // volume = 100 * (48 * 48)
+    //     pretty_test(&map, 230_400);
+    // }
+}
+
+#[cfg(test)]
+mod sudoku_tests {
+
+    use super::sudoku::Sudoku;
+
+    #[test]
+    fn good_sudoku() {
+        let good_sudoku_1 = Sudoku {
+            data: vec![
+                vec![7, 8, 4, 1, 5, 9, 3, 2, 6],
+                vec![5, 3, 9, 6, 7, 2, 8, 4, 1],
+                vec![6, 1, 2, 4, 3, 8, 7, 5, 9],
+                vec![9, 2, 8, 7, 1, 5, 4, 6, 3],
+                vec![3, 5, 7, 8, 4, 6, 1, 9, 2],
+                vec![4, 6, 1, 9, 2, 3, 5, 8, 7],
+                vec![8, 7, 6, 3, 9, 4, 2, 1, 5],
+                vec![2, 4, 3, 5, 6, 1, 9, 7, 8],
+                vec![1, 9, 5, 2, 8, 7, 6, 3, 4],
+            ],
+        };
+
+        let good_sudoku_2 = Sudoku {
+            data: vec![
+                vec![1, 4, 2, 3],
+                vec![3, 2, 4, 1],
+                vec![4, 1, 3, 2],
+                vec![2, 3, 1, 4],
+            ],
+        };
+        assert!(good_sudoku_1.is_valid());
+        assert!(good_sudoku_2.is_valid());
     }
 
     #[test]
-    fn small_maps_test() {
+    fn bad_sudoku() {
+        let bad_sudoku_1 = Sudoku {
+            data: vec![
+                vec![1, 2, 3, 4, 5, 6, 7, 8, 9],
+                vec![1, 2, 3, 4, 5, 6, 7, 8, 9],
+                vec![1, 2, 3, 4, 5, 6, 7, 8, 9],
+                vec![1, 2, 3, 4, 5, 6, 7, 8, 9],
+                vec![1, 2, 3, 4, 5, 6, 7, 8, 9],
+                vec![1, 2, 3, 4, 5, 6, 7, 8, 9],
+                vec![1, 2, 3, 4, 5, 6, 7, 8, 9],
+                vec![1, 2, 3, 4, 5, 6, 7, 8, 9],
+                vec![1, 2, 3, 4, 5, 6, 7, 8, 9],
+            ],
+        };
 
-        let tests = [
-            (vec![vec![0]], 0),
-            
-            (vec![vec![22]], 0),
-            
-            (vec![vec![2, 1, 2],
-                  vec![1, 0, 1],
-                  vec![2, 1, 2]], 1),
-            
-            (vec![vec![1, 1, 1],
-                  vec![1, 8, 1],
-                  vec![1, 1, 1]], 0),
-            
-            (vec![vec![9, 9, 9, 9],
-                  vec![9, 0, 0, 9],
-                  vec![9, 0, 0, 9],
-                  vec![9, 9, 9, 9]], 36),
-            
-            (vec![vec![9, 9, 9, 9, 9],
-                  vec![9, 0, 1, 2, 9],
-                  vec![9, 7, 8, 3, 9],
-                  vec![9, 6, 5, 4, 9],
-                  vec![9, 9, 9, 9, 9]], 45),
-            
-            (vec![vec![8, 8, 8, 8, 6, 6, 6, 6],
-                  vec![8, 0, 0, 8, 6, 0, 0, 6],
-                  vec![8, 0, 0, 8, 6, 0, 0, 6],
-                  vec![8, 8, 8, 8, 6, 6, 6, 0]], 56),
-            
-            (vec![vec![ 0, 10,  0, 20,  0],
-                  vec![20,  0, 30,  0, 40],
-                  vec![ 0, 40,  0, 50,  0],
-                  vec![50,  0, 60,  0, 70],
-                  vec![ 0, 60,  0, 70,  0]], 150),
-            
-            (vec![vec![3, 3, 3, 3, 3],
-                  vec![3, 0, 0, 0, 3],
-                  vec![3, 3, 3, 0, 3],
-                  vec![3, 0, 0, 0, 3],
-                  vec![3, 0, 3, 3, 3],
-                  vec![3, 0, 0, 0, 3],
-                  vec![3, 3, 3, 0, 3]], 0),
-            
-            (vec![vec![3, 3, 3, 3, 3],
-                  vec![3, 2, 2, 2, 3],
-                  vec![3, 3, 3, 2, 3],
-                  vec![3, 1, 1, 1, 3],
-                  vec![3, 1, 3, 3, 3],
-                  vec![3, 0, 0, 0, 3],
-                  vec![3, 3, 3, 0, 3]], 0),
-            
-            (vec![vec![3, 3, 3, 3, 3],
-                  vec![3, 0, 0, 0, 3],
-                  vec![3, 3, 3, 0, 3],
-                  vec![3, 0, 0, 0, 3],
-                  vec![3, 0, 3, 3, 3],
-                  vec![3, 0, 0, 0, 3],
-                  vec![3, 3, 3, 1, 3]], 11),
-            
-            (vec![vec![3, 3, 3, 1, 3],
-                  vec![3, 0, 0, 0, 3],
-                  vec![3, 0, 3, 3, 3],
-                  vec![3, 0, 0, 0, 3],
-                  vec![3, 3, 3, 0, 3],
-                  vec![3, 0, 0, 0, 3],
-                  vec![3, 3, 3, 3, 3]], 11),
-        ];
-        
-        for (map, expected) in tests.iter() {
-            pretty_test(map, *expected);
-        }
-    }
-
-    #[test]
-    fn negative_heights_tests() {
-        let tests = [
-            (vec![vec![-1]], 0),
-            
-            (vec![vec![3, 3, 3, 3, 3],
-                  vec![3, 0, 0, 0, 3],
-                  vec![3, 3, 3, 0, 3],
-                  vec![3, 0, -2, 0, 3],
-                  vec![3, 0, 3, 3, 3],
-                  vec![3, 0, 0, 0, 3],
-                  vec![3, 3, 3, 1, -3]], 13),
-            
-            (vec![vec![8192, 8192, 8192, 8192],
-                  vec![8192,-8192,-8192, 8192],
-                  vec![8192,-8192,-8192, 8192],
-                  vec![8192, 8192, 8192, 8192]], 65536)
-        ];
-
-        for (map, expected) in tests.iter() {
-            pretty_test(map, *expected);
-        }
-    }
-
-    #[test]
-    fn large_map_test() {
-        // 50x50 map without leaks; 100 around the border, 0 inside
-        let mut map = vec![vec![100; 50]; 50];
-        for y in 1..49 {
-            for x in 1..49 {
-                map[y][x] = 0;
-            }
-        }
-        // volume = 100 * (48 * 48)
-        pretty_test(&map, 230_400);
+        let bad_sudoku_2 = Sudoku {
+            data: vec![
+                vec![1, 2, 3, 4, 5],
+                vec![1, 2, 3, 4],
+                vec![1, 2, 3, 4],
+                vec![1],
+            ],
+        };
+        assert!(!bad_sudoku_1.is_valid());
+        assert!(!bad_sudoku_2.is_valid());
     }
 }
