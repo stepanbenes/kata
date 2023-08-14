@@ -6,6 +6,8 @@ mod sudoku;
 //mod spiralize;
 //mod last_digit_of_large_numbers;
 //mod dijkstra;
+mod infix_to_postfix;
+mod eval;
 
 /// https://www.codewars.com/kata/5208f99aee097e6552000148
 pub fn solution(s: &str) -> String {
@@ -235,6 +237,22 @@ mod tests {
     // fn test_all_balanced_parenthesis() {
     //     assert_eq!(all_balanced_parentheses::balanced_parens(3), vec!["((()))", "(()())", "(())()", "()(())", "()()()"]);
     // }
+
+    #[test]
+    fn test_eval() {
+        use eval::{ eval, to_postfix, Token };
+
+        let input = "((2.33 / (2.9+3.5)*4) - -6)";
+        let output: Vec<Token> = to_postfix(input);
+        let output_string: String = output
+            .iter()
+            .map(|token| format!("{token}"))
+            .collect::<Vec<_>>()
+            .join("|");
+        println!("input: {input}; output: {output_string};");
+        let value = eval(output);
+        assert_eq!(value, 7.45625);
+    }
 }
 
 #[cfg(test)]
