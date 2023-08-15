@@ -8,6 +8,7 @@ mod sudoku;
 //mod dijkstra;
 mod infix_to_postfix;
 mod eval;
+mod char_count;
 
 /// https://www.codewars.com/kata/5208f99aee097e6552000148
 pub fn solution(s: &str) -> String {
@@ -366,5 +367,41 @@ mod sudoku_tests {
         };
         assert!(!bad_sudoku_1.is_valid());
         assert!(!bad_sudoku_2.is_valid());
+    }
+}
+
+#[cfg(test)]
+mod char_count_tests {
+    use super::*;
+    use std::collections::HashMap;
+    use char_count::count;
+    
+    const ERR_MSG: &str = "\nYour result (left) did not match the expected output (right)";
+
+    #[test]
+    fn test_empty_string() {
+        let test_input = "";
+        let expected: HashMap<char, i32> = HashMap::new();
+        
+        assert_eq!(count(test_input), expected, "{ERR_MSG} with input: \"{test_input}\"");
+    }
+    
+    #[test]
+    fn test_string_with_two_equal_letters() {
+        let test_input = "aa";
+        let mut expected: HashMap<char, i32> = HashMap::new();
+        expected.insert('a', 2);
+        
+        assert_eq!(count(test_input), expected, "{ERR_MSG} with input: \"{test_input}\"");
+    }
+        
+    #[test]
+    fn test_string_with_different_letters() {
+        let test_input = "aabb";
+        let mut expected: HashMap<char, i32> = HashMap::new();
+        expected.insert('a', 2);
+        expected.insert('b', 2);
+        
+        assert_eq!(count(test_input), expected, "{ERR_MSG} with input: \"{test_input}\"");
     }
 }
