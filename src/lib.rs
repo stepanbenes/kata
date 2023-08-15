@@ -9,6 +9,7 @@ mod sudoku;
 mod infix_to_postfix;
 mod eval;
 mod char_count;
+mod consecutive_strings;
 
 /// https://www.codewars.com/kata/5208f99aee097e6552000148
 pub fn solution(s: &str) -> String {
@@ -375,7 +376,7 @@ mod char_count_tests {
     use super::*;
     use std::collections::HashMap;
     use char_count::count;
-    
+
     const ERR_MSG: &str = "\nYour result (left) did not match the expected output (right)";
 
     #[test]
@@ -403,5 +404,26 @@ mod char_count_tests {
         expected.insert('b', 2);
         
         assert_eq!(count(test_input), expected, "{ERR_MSG} with input: \"{test_input}\"");
+    }
+}
+
+mod consecutive_strings_tests {
+    use super::*;
+    use consecutive_strings::longest_consec;
+
+
+    fn testing(strarr: Vec<&str>, k: usize, exp: &str) -> () {
+        assert_eq!(&longest_consec(strarr, k), exp)
+    }
+    
+    #[test]
+    fn basics_longest_consec() {
+        testing(vec!["zone", "abigail", "theta", "form", "libe", "zas"], 2, "abigailtheta");
+        testing(vec!["ejjjjmmtthh", "zxxuueeg", "aanlljrrrxx", "dqqqaaabbb", "oocccffuucccjjjkkkjyyyeehh"], 1, 
+            "oocccffuucccjjjkkkjyyyeehh");
+        testing(vec![], 3, "");
+        testing(vec!["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 3, "ixoyx3452zzzzzzzzzzzz");
+        testing(vec!["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 15, "");
+        testing(vec!["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 0, "");
     }
 }
