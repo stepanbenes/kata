@@ -10,6 +10,7 @@ mod infix_to_postfix;
 mod eval;
 mod char_count;
 mod consecutive_strings;
+mod rock_paper_scissors;
 
 /// https://www.codewars.com/kata/5208f99aee097e6552000148
 pub fn solution(s: &str) -> String {
