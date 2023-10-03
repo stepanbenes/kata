@@ -7,7 +7,6 @@ pub struct Sudoku {
 // https://www.codewars.com/kata/540afbe2dc9f615d5e000425/solutions/rust
 impl Sudoku {
     pub fn is_valid(&self) -> bool {
-        
         println!("huhu:");
         for row in self.data.iter() {
             for element in row {
@@ -27,8 +26,7 @@ impl Sudoku {
             for element in row {
                 if map.contains(element) {
                     return false;
-                }
-                else {
+                } else {
                     map.insert(element);
                 }
             }
@@ -45,8 +43,7 @@ impl Sudoku {
                 let element = &row[index];
                 if map.contains(element) {
                     return false;
-                }
-                else {
+                } else {
                     map.insert(element);
                 }
             }

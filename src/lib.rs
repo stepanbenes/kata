@@ -6,11 +6,12 @@ mod sudoku;
 //mod spiralize;
 //mod last_digit_of_large_numbers;
 //mod dijkstra;
-mod infix_to_postfix;
-mod eval;
 mod char_count;
 mod consecutive_strings;
+mod eval;
+mod infix_to_postfix;
 mod rock_paper_scissors;
+mod valid_isbn10;
 
 /// https://www.codewars.com/kata/5208f99aee097e6552000148
 pub fn solution(s: &str) -> String {
@@ -243,7 +244,7 @@ mod tests {
 
     #[test]
     fn test_eval() {
-        use eval::{ eval, to_postfix, Token };
+        use eval::{eval, to_postfix, Token};
 
         let input = "((2.33 / (2.9+3.5)*4) - -6)";
         let output: Vec<Token> = to_postfix(input);
@@ -375,8 +376,8 @@ mod sudoku_tests {
 #[cfg(test)]
 mod char_count_tests {
     use super::*;
-    use std::collections::HashMap;
     use char_count::count;
+    use std::collections::HashMap;
 
     const ERR_MSG: &str = "\nYour result (left) did not match the expected output (right)";
 
@@ -384,47 +385,104 @@ mod char_count_tests {
     fn test_empty_string() {
         let test_input = "";
         let expected: HashMap<char, i32> = HashMap::new();
-        
-        assert_eq!(count(test_input), expected, "{ERR_MSG} with input: \"{test_input}\"");
+
+        assert_eq!(
+            count(test_input),
+            expected,
+            "{ERR_MSG} with input: \"{test_input}\""
+        );
     }
-    
+
     #[test]
     fn test_string_with_two_equal_letters() {
         let test_input = "aa";
         let mut expected: HashMap<char, i32> = HashMap::new();
         expected.insert('a', 2);
-        
-        assert_eq!(count(test_input), expected, "{ERR_MSG} with input: \"{test_input}\"");
+
+        assert_eq!(
+            count(test_input),
+            expected,
+            "{ERR_MSG} with input: \"{test_input}\""
+        );
     }
-        
+
     #[test]
     fn test_string_with_different_letters() {
         let test_input = "aabb";
         let mut expected: HashMap<char, i32> = HashMap::new();
         expected.insert('a', 2);
         expected.insert('b', 2);
-        
-        assert_eq!(count(test_input), expected, "{ERR_MSG} with input: \"{test_input}\"");
+
+        assert_eq!(
+            count(test_input),
+            expected,
+            "{ERR_MSG} with input: \"{test_input}\""
+        );
     }
 }
 
+#[cfg(test)]
 mod consecutive_strings_tests {
     use super::*;
     use consecutive_strings::longest_consec;
 
-
     fn testing(strarr: Vec<&str>, k: usize, exp: &str) -> () {
         assert_eq!(&longest_consec(strarr, k), exp)
     }
-    
+
     #[test]
     fn basics_longest_consec() {
-        testing(vec!["zone", "abigail", "theta", "form", "libe", "zas"], 2, "abigailtheta");
-        testing(vec!["ejjjjmmtthh", "zxxuueeg", "aanlljrrrxx", "dqqqaaabbb", "oocccffuucccjjjkkkjyyyeehh"], 1, 
-            "oocccffuucccjjjkkkjyyyeehh");
+        testing(
+            vec!["zone", "abigail", "theta", "form", "libe", "zas"],
+            2,
+            "abigailtheta",
+        );
+        testing(
+            vec![
+                "ejjjjmmtthh",
+                "zxxuueeg",
+                "aanlljrrrxx",
+                "dqqqaaabbb",
+                "oocccffuucccjjjkkkjyyyeehh",
+            ],
+            1,
+            "oocccffuucccjjjkkkjyyyeehh",
+        );
         testing(vec![], 3, "");
-        testing(vec!["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 3, "ixoyx3452zzzzzzzzzzzz");
-        testing(vec!["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 15, "");
-        testing(vec!["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 0, "");
+        testing(
+            vec!["it", "wkppv", "ixoyx", "3452", "zzzzzzzzzzzz"],
+            3,
+            "ixoyx3452zzzzzzzzzzzz",
+        );
+        testing(vec!["it", "wkppv", "ixoyx", "3452", "zzzzzzzzzzzz"], 15, "");
+        testing(vec!["it", "wkppv", "ixoyx", "3452", "zzzzzzzzzzzz"], 0, "");
+    }
+}
+
+#[cfg(test)]
+mod valid_isbn10_tests {
+    use super::valid_isbn10::valid_isbn10;
+
+    fn dotest(isbn: &str, expected: bool) {
+        let actual = valid_isbn10(isbn);
+        assert!(
+            actual == expected,
+            "Test failed with isbn = {isbn}\nExpected {expected} but got {actual}"
+        )
+    }
+
+    #[test]
+    fn sample_tests() {
+        dotest("1112223339", true);
+        dotest("048665088X", true);
+        dotest("1293000000", true);
+        dotest("1234554321", true);
+        dotest("1234512345", false);
+        dotest("1293", false);
+        dotest("X123456788", false);
+        dotest("ABCDEFGHIJ", false);
+        dotest("XXXXXXXXXX", false);
+        dotest("123456789T", false);
+        dotest("04X1708136", false);
     }
 }

@@ -9,5 +9,10 @@ pub fn count(input: &str) -> HashMap<char, i32> {
     //     *value_ref += 1;
     // }
     //result
-    input.chars().fold(HashMap::<char, i32>::new(), |mut acc, c| { *acc.entry(c).or_insert(0) += 1; acc })
-}   
+    input
+        .chars()
+        .fold(HashMap::<char, i32>::new(), |mut acc, c| {
+            *acc.entry(c).or_insert(0) += 1;
+            acc
+        })
+}

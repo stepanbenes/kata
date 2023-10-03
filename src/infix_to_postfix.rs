@@ -27,16 +27,18 @@ impl OperatorProperties for char {
     }
 }
 
-enum Asociativity { Left, Right }
+enum Asociativity {
+    Left,
+    Right,
+}
 
 fn check_precedence_and_asociativity(top_stack_element: char, current: char) -> bool {
     if current.precedence() == top_stack_element.precedence() {
         match current.asociativity() {
             Asociativity::Right => true,
-            Asociativity::Left => false
-        }    
-    }
-    else {
+            Asociativity::Left => false,
+        }
+    } else {
         current.precedence() < top_stack_element.precedence()
     }
 }
@@ -44,7 +46,7 @@ fn check_precedence_and_asociativity(top_stack_element: char, current: char) -> 
 fn to_postfix(infix: &str) -> String {
     let mut stack = Vec::<char>::new();
     let mut postfix = Vec::<char>::new();
-    
+
     for current in infix.chars() {
         match current {
             '0'..='9' => postfix.push(current),
@@ -52,14 +54,12 @@ fn to_postfix(infix: &str) -> String {
                 while let Some(&top_stack_element) = stack.last() {
                     if check_precedence_and_asociativity(top_stack_element, current) {
                         postfix.push(stack.pop().unwrap());
-                    }
-                    else {
+                    } else {
                         break;
                     }
-                    
                 }
                 stack.push(current);
-            },
+            }
             '(' => stack.push(current),
             ')' => {
                 while let Some(&top_stack_element) = stack.last() {
@@ -69,17 +69,16 @@ fn to_postfix(infix: &str) -> String {
                     postfix.push(stack.pop().unwrap());
                 }
                 stack.pop();
-            },
+            }
             _ => continue, // ignore
         };
     }
-    
+
     while let Some(x) = stack.pop() {
         postfix.push(x);
     }
-    
+
     postfix.into_iter().collect()
-    
 }
 
 fn main() {
