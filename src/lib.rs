@@ -1,17 +1,30 @@
+#[allow(dead_code)]
 mod all_balanced_parentheses;
+#[allow(dead_code)]
 mod differentiation;
+#[allow(dead_code)]
 mod fluid_volume;
+#[allow(dead_code)]
 mod molecule_parser;
+#[allow(dead_code)]
 mod sudoku;
 //mod spiralize;
 //mod last_digit_of_large_numbers;
 //mod dijkstra;
+#[allow(dead_code)]
 mod char_count;
+#[allow(dead_code)]
 mod consecutive_strings;
+#[allow(dead_code)]
 mod eval;
+#[allow(dead_code)]
 mod infix_to_postfix;
+#[allow(dead_code)]
 mod rock_paper_scissors;
+#[allow(dead_code)]
 mod valid_isbn10;
+#[allow(dead_code)]
+mod factorial_decomposition;    
 
 /// https://www.codewars.com/kata/5208f99aee097e6552000148
 pub fn solution(s: &str) -> String {
@@ -485,4 +498,29 @@ mod valid_isbn10_tests {
         dotest("123456789T", false);
         dotest("04X1708136", false);
     }
+}
+
+#[cfg(test)]
+mod factorial_decomposition_tests {
+    use super::factorial_decomposition::*;
+   
+    fn dotest(n: i32, exp: &str) -> () {
+        println!("n:{:?}", n);
+        let ans = decomp(n);
+        println!("actual: {:?}", ans);
+        println!("expect: {:?}", exp.to_string());
+        println!("{}", ans == exp.to_string());
+        assert_eq!(ans, exp.to_string());
+        println!("{}", "-");
+    }
+    
+    #[test]
+    fn basic_tests() {
+        dotest(17, "2^15 * 3^6 * 5^3 * 7^2 * 11 * 13 * 17");
+        dotest(5, "2^3 * 3 * 5");
+        dotest(22, "2^19 * 3^9 * 5^4 * 7^3 * 11^2 * 13 * 17 * 19");
+        dotest(14, "2^11 * 3^5 * 5^2 * 7^2 * 11 * 13");
+        dotest(25, "2^22 * 3^10 * 5^6 * 7^3 * 11^2 * 13 * 17 * 19 * 23");
+
+    }    
 }

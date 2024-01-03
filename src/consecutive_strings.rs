@@ -1,7 +1,5 @@
 // https://www.codewars.com/kata/56a5d994ac971f1ac500003e
 
-use std::collections::HashMap;
-
 pub fn longest_consec(strarr: Vec<&str>, k: usize) -> String {
     if k > 0 && strarr.len() >= k {
         let mut max_length = usize::MIN;
