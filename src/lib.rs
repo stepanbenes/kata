@@ -18,13 +18,15 @@ mod consecutive_strings;
 #[allow(dead_code)]
 mod eval;
 #[allow(dead_code)]
+mod factorial_decomposition;
+#[allow(dead_code)]
 mod infix_to_postfix;
 #[allow(dead_code)]
 mod rock_paper_scissors;
 #[allow(dead_code)]
-mod valid_isbn10;
+mod string_incrementer;
 #[allow(dead_code)]
-mod factorial_decomposition;    
+mod valid_isbn10;
 
 /// https://www.codewars.com/kata/5208f99aee097e6552000148
 pub fn solution(s: &str) -> String {
@@ -503,7 +505,7 @@ mod valid_isbn10_tests {
 #[cfg(test)]
 mod factorial_decomposition_tests {
     use super::factorial_decomposition::*;
-   
+
     fn dotest(n: i32, exp: &str) -> () {
         println!("n:{:?}", n);
         let ans = decomp(n);
@@ -513,7 +515,7 @@ mod factorial_decomposition_tests {
         assert_eq!(ans, exp.to_string());
         println!("{}", "-");
     }
-    
+
     #[test]
     fn basic_tests() {
         dotest(17, "2^15 * 3^6 * 5^3 * 7^2 * 11 * 13 * 17");
@@ -521,6 +523,74 @@ mod factorial_decomposition_tests {
         dotest(22, "2^19 * 3^9 * 5^4 * 7^3 * 11^2 * 13 * 17 * 19");
         dotest(14, "2^11 * 3^5 * 5^2 * 7^2 * 11 * 13");
         dotest(25, "2^22 * 3^10 * 5^6 * 7^3 * 11^2 * 13 * 17 * 19 * 23");
+    }
+}
 
-    }    
+#[cfg(test)]
+mod longest_vowel_chain_tests {
+    #[test]
+    fn test() {
+        // fn longest_vowel_chain(s: &str) -> usize {
+        //     let mut longest = 0;
+        //     let mut sum = 0;
+
+        //     for ch in s.chars() {
+        //         match ch {
+        //             'a' | 'e' | 'i' | 'o' | 'u' => sum += 1,
+        //             _ => {
+        //                 if sum > longest {
+        //                     longest = sum;
+        //                 }
+        //                 sum = 0;
+        //             }
+        //         }
+        //     }
+
+        //     longest
+        // }
+        fn longest_vowel_chain(s: &str) -> usize {
+            let mut current_chain = 0;
+            let mut longest_chain = 0;
+            for c in s.chars() {
+                let is_vowel = match c {
+                    'a' | 'e' | 'i' | 'o' | 'u' => true,
+                    _ => false,
+                };
+                if is_vowel {
+                    current_chain += 1;
+                } else {
+                    longest_chain = usize::max(longest_chain, current_chain);
+                    current_chain = 0;
+                }
+            }
+            longest_chain = usize::max(longest_chain, current_chain);
+            longest_chain
+        }
+        let result = longest_vowel_chain("sequoia");
+        assert!(result == 4, "was {result}, expected 4");
+    }
+}
+
+#[cfg(test)]
+mod string_incrementer_tests {
+    use super::string_incrementer::increment_string;
+
+    fn dotest(s: &str, expected: &str) {
+        let actual = increment_string(s);
+        assert!(
+            actual == expected,
+            "Test failed with s = \"{s}\"\nExpected \"{expected}\"\nBut got \"{actual}\""
+        )
+    }
+
+    #[test]
+    fn sample_tests() {
+        dotest("foo", "foo1");
+        dotest("foobar001", "foobar002");
+        dotest("foobar1", "foobar2");
+        dotest("foobar00", "foobar01");
+        dotest("foobar99", "foobar100");
+        dotest("foobar099", "foobar100");
+        dotest("", "1");
+    }
 }

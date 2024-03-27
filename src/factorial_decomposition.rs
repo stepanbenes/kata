@@ -20,9 +20,13 @@ pub fn decomp(n: i32) -> String {
     let mut parts: Vec<String> = Vec::new();
 
     for (factor, count) in factors_map {
-        parts.push(if count == 1 { factor.to_string() } else { format!("{factor}^{count}") });
+        parts.push(if count == 1 {
+            factor.to_string()
+        } else {
+            format!("{factor}^{count}")
+        });
     }
-    
+
     parts.join(" * ")
 }
 
